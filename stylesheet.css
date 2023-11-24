@@ -1,0 +1,56 @@
+body {
+    box-sizing: border-box;
+}
+
+.page {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.form {
+    display: flex;
+    flex: 1;
+    margin-left: 20px;
+    margin-right: 20px;
+    font-size: 1.5em;
+    padding: 20px;
+    min-width: 800px;
+    flex-flow: column nowrap;
+    border: 5px solid orange
+}
+
+
+.submit-seccion {
+    display:flex;
+    flex: 1;
+    justify-content: center;
+}
+
+
+.submit {
+    height: 30px;
+    background: orange;
+    width: 150px;
+    margin: 30px;
+}
+
+
+label {
+    flex: 1 0 100px;
+    max-width: 300px;
+    margin: 15px;
+    font-size: 1.5em;
+}
+
+
+
+.error-section {
+    display:flex;
+    justify-content: flex-end;
+    flex: auto;
+}
+
+.error {
+    color: red;
+}
