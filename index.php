@@ -4,18 +4,16 @@ define('RUTA_FICHEROS', '.\ficheros');
 if (empty($_POST)) {
     $ficheros = array_filter(scandir(RUTA_FICHEROS), fn($fichero) => $fichero != "." && $fichero != "..");
 } else {
-    if (filter_has_var(INPUT_POST, 'enviar')) {
-        if (isset($_FILES["fichero"]) && is_uploaded_file($_FILES["fichero"]["tmp_name"])) {
-            if (move_uploaded_file($_FILES["fichero"]["tmp_name"], RUTA_FICHEROS . "\\" . $_FILES["fichero"]["name"])) {
-                $ficheroSubido = [$_FILES["fichero"]["name"]];
-            }
+    if (isset($_FILES["fichero"]) && is_uploaded_file($_FILES["fichero"]["tmp_name"])) {
+        if (move_uploaded_file($_FILES["fichero"]["tmp_name"], RUTA_FICHEROS . "\\" . $_FILES["fichero"]["name"])) {
+            $ficheroSubido = [$_FILES["fichero"]["name"]];
         }
     }
-    $ficherosSeleccionados = filter_input(INPUT_POST, 'ficherosSeleccionados', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY) ?? [];
-    $ficherosFormulario = filter_input(INPUT_POST, 'ficheros', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY) ?? [];
-    foreach ($ficherosSeleccionados as $ficheroBorrar) {
+    $ficherosSeleccionados = $_POST['ficherosseleccionados'] ?? [];
+    $ficherosFormulario = $_POST['ficheros'] ?? [];
+    array_walk($ficherosSeleccionados, function ($ficheroBorrar) {
         unlink(RUTA_FICHEROS . "\\" . $ficheroBorrar);
-    }
+    });
     $ficheros = array_unique(array_diff(array_merge($ficherosFormulario, ($ficheroSubido ?? []),), $ficherosSeleccionados));
 }
 ?>
@@ -30,7 +28,7 @@ if (empty($_POST)) {
     <body>
         <div class="page">
             <h1>Gestión de ficheros</h1>
-            <form class="form" name="form_cambio_de_base" 
+            <form class="form" name="gestión_ficheros" 
                   action="<?= $_SERVER['PHP_SELF'] ?>" method="POST" enctype="multipart/form-data">
                 <div>
                     <label for="fichero">Nuevo Fichero:</label> 
@@ -42,7 +40,7 @@ if (empty($_POST)) {
                     <?php else: ?>
                         <legend>Seleccione para borrar:</legend>
                         <?php foreach ($ficheros as $fichero): ?>
-                            <label><input id="ficheros" type="checkbox" name="ficherosSeleccionados[]" value="<?= $fichero ?>" />
+                            <label><input id="ficheros" type="checkbox" name="ficherosseleccionados[]" value="<?= $fichero ?>" />
                                 <?= $fichero ?></label><br>
                             <input type="hidden" name="ficheros[]" value="<?= $fichero ?>" />
                         <?php endforeach ?>
@@ -55,6 +53,5 @@ if (empty($_POST)) {
             </form> 
         </div>  
     </body>
-</html>
 </html>
 
